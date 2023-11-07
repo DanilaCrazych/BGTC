@@ -1,12 +1,11 @@
 package com.example.bgtc;
 
 import javafx.animation.FadeTransition;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -19,25 +18,32 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
-
+    MysqlConnect mysqlConnect = new MysqlConnect();
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
     Date date = new Date(System.currentTimeMillis());
     String url = "jdbc:mysql://192.168.0.179:3306/BGTC";
-    //    String url = "jdbc:mysql://213.167.217.126:3306/BGTC";
-    private String user = "Danilas";
-    private String password = "p@ssw0rd";
-    private Connection connection;
+    //   public String url = "jdbc:mysql://IP_ADDR:3306/BGTC";
+    String user = "Danilas";
+    String password = "p@ssw0rd";
+    public Connection connection;
 
     @FXML
-    private Label ErrorLogin, Date, AdministrirovanieLabel, StatusCreate;
+    private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark;
     @FXML
     private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass;
     @FXML
-    private Pane Auth, LeftPanel, AdminUserAdd;
+    private Pane Auth, LeftPanel, AdminUserAdd, AutoParkPane;
     @FXML
     private Button LoginButton, CreateUser;
-
-
+    @FXML
+    private TableColumn<AutoPark, String> GRZCol;
+    @FXML
+    private TableColumn<AutoPark, Integer> IdCol;
+    @FXML
+    private TableColumn<AutoPark, String> AutoCol;
+    @FXML
+    private TableView<AutoPark> TableAutoPark;
+    ObservableList<AutoPark> listM;
 
     @FXML
     protected void Login() throws InterruptedException {
@@ -76,15 +82,35 @@ public class HelloController implements Initializable {
     }
 
     @FXML
-    protected  void AdministrirovanieLabel() {
+    protected void AdministrirovanieLabel() {
+        TableAutoPark.setVisible(false);
         AdminUserAdd.setVisible(true);
     }
+
     @FXML
-    protected  void CreateUser() {
+    protected void AutoParkPane() {
+        mysqlConnect.dataAutoPark();
+        LeftPanel.setVisible(false);
+        AdminUserAdd.setVisible(false);
+        AutoParkPane.setVisible(true);
+        try {
+            IdCol.setCellValueFactory(new PropertyValueFactory<AutoPark, Integer>("id"));
+            AutoCol.setCellValueFactory(new PropertyValueFactory<AutoPark, String>("auto"));
+            GRZCol.setCellValueFactory(new PropertyValueFactory<AutoPark, String>("grz"));
+
+            listM = mysqlConnect.list;
+            TableAutoPark.setItems(listM);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    protected void CreateUser() {
         String LoginCreate = CreateUserLogin.getText();
         String MailCreate = CreateUserMail.getText();
         String PassCreate = CreateUserPass.getText();
-        String query = "INSERT INTO `BGTC`.`users` (`login`, `password`, `mail`) VALUES ('"+LoginCreate+"', '"+PassCreate+"', '"+MailCreate+"');";
+        String query = "INSERT INTO `BGTC`.`users` (`login`, `password`, `mail`) VALUES ('" + LoginCreate + "', '" + PassCreate + "', '" + MailCreate + "');";
 
         try {
             Statement statement = connection.createStatement();
@@ -97,13 +123,24 @@ public class HelloController implements Initializable {
         }
     }
 
+    @FXML
+    protected void Exit(){
+        LeftPanel.setVisible(true);
+        AdminUserAdd.setVisible(false);
+        AutoParkPane.setVisible(false);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ConnectBd();
         FadeTransition leftpaneFade = new FadeTransition(Duration.seconds(1), LeftPanel);
         leftpaneFade.setByValue(1.0);
         leftpaneFade.setToValue(0);
         leftpaneFade.play();
         Date.setText("Дата: " + formatter.format(date));
+    }
+
+    public void ConnectBd() {
         try {
             connection = DriverManager.getConnection(url, user, password);
             System.out.println("Подключение к базе данных успешно установлено!");

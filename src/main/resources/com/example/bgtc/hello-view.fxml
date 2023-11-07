@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -11,50 +13,62 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bgtc.HelloController">
    <children>
-      <AnchorPane layoutX="177.0" prefHeight="400.0" prefWidth="323.0">
+      <Pane fx:id="Auth" layoutX="177.0" prefHeight="400.0" prefWidth="315.0">
          <children>
-            <Pane fx:id="Auth" prefHeight="400.0" prefWidth="323.0">
-               <children>
-                  <TextField fx:id="AuthLoginField" layoutX="14.0" layoutY="56.0" promptText="Login" />
-                  <PasswordField fx:id="AuthPassField" layoutX="14.0" layoutY="100.0" promptText="Password" />
-                  <Button fx:id="LoginButton" layoutX="17.0" layoutY="137.0" minHeight="21.0" mnemonicParsing="false" onAction="#Login" prefHeight="33.0" prefWidth="152.0" text="Вход" textAlignment="CENTER" />
-                  <Hyperlink fx:id="ForgotPass" layoutX="110.0" layoutY="176.0" text="Забыли пароль?" />
-                  <Label fx:id="ErrorLogin" layoutX="11.0" layoutY="24.0" text="Неверный логин или пароль" textFill="RED" visible="false">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Label>         </children>
-            </Pane>
-            <Pane fx:id="AdminUserAdd" prefHeight="400.0" prefWidth="323.0" visible="false">
-               <children>
-                  <TextField fx:id="CreateUserLogin" layoutX="14.0" layoutY="47.0" promptText="Login" />
-                  <TextField fx:id="CreateUserMail" layoutX="14.0" layoutY="87.0" promptText="Mail" />
-                  <PasswordField fx:id="CreateUserPass" layoutX="14.0" layoutY="128.0" promptText="Password" />
-                  <Button fx:id="CreateUser" layoutX="14.0" layoutY="170.0" minHeight="21.0" mnemonicParsing="false" onAction="#CreateUser" prefHeight="33.0" prefWidth="152.0" text="Создать" textAlignment="CENTER" />
-                  <Label fx:id="StatusCreate" layoutX="14.0" layoutY="14.0" text="Создание нового пользователя">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </Pane>
+            <TextField fx:id="AuthLoginField" layoutX="14.0" layoutY="56.0" promptText="Login" />
+            <PasswordField fx:id="AuthPassField" layoutX="14.0" layoutY="100.0" promptText="Password" />
+            <Button fx:id="LoginButton" layoutX="17.0" layoutY="137.0" minHeight="21.0" mnemonicParsing="false" onAction="#Login" prefHeight="33.0" prefWidth="152.0" text="Вход" textAlignment="CENTER" />
+            <Hyperlink fx:id="ForgotPass" layoutX="110.0" layoutY="176.0" text="Забыли пароль?" />
+            <Label fx:id="ErrorLogin" layoutX="11.0" layoutY="24.0" text="Неверный логин или пароль" textFill="RED" visible="false">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>         </children>
+      </Pane>
+      <Pane fx:id="AutoParkPane" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #0097B5;" visible="false">
+         <children>
+            <TableView fx:id="TableAutoPark" layoutX="178.0" layoutY="1.0" prefHeight="400.0" prefWidth="323.0">
+              <columns>
+                <TableColumn fx:id="IdCol" prefWidth="75.0" text="Id" />
+                <TableColumn fx:id="AutoCol" prefWidth="75.0" text="Авто" />
+                  <TableColumn fx:id="GRZCol" prefWidth="75.0" text="ГРЗ" />
+              </columns>
+            </TableView>
+            <Label fx:id="ExitAutoPark" layoutX="14.0" layoutY="367.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
          </children>
-      </AnchorPane>
-      <Pane fx:id="LeftPanel" layoutX="-6.0" prefHeight="400.0" prefWidth="184.0" style="-fx-background-color: #0097B5;">
+      </Pane>
+      <Pane fx:id="LeftPanel" prefHeight="400.0" prefWidth="178.0" style="-fx-background-color: #0097B5;">
          <children>
+            <Label fx:id="Date" layoutX="14.0" layoutY="14.0" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
             <Label fx:id="AdministrirovanieLabel" layoutX="16.0" layoutY="33.0" onMouseClicked="#AdministrirovanieLabel" prefHeight="33.0" prefWidth="152.0" text="Администрирование" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label layoutX="16.0" layoutY="68.0" prefHeight="18.0" prefWidth="134.0" text="Автопарк" textFill="WHITE">
+            <Label fx:id="AutoPark" layoutX="16.0" layoutY="68.0" onMouseClicked="#AutoParkPane" prefHeight="18.0" prefWidth="134.0" text="Автопарк" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="Date" layoutX="14.0" layoutY="14.0" textFill="WHITE">
+         </children>
+      </Pane>
+      <Pane fx:id="AdminUserAdd" layoutX="177.0" prefHeight="400.0" prefWidth="323.0" visible="false">
+         <children>
+            <TextField fx:id="CreateUserLogin" layoutX="14.0" layoutY="47.0" promptText="Login" />
+            <TextField fx:id="CreateUserMail" layoutX="14.0" layoutY="87.0" promptText="Mail" />
+            <PasswordField fx:id="CreateUserPass" layoutX="14.0" layoutY="128.0" promptText="Password" />
+            <Button fx:id="CreateUser" layoutX="14.0" layoutY="170.0" minHeight="21.0" mnemonicParsing="false" onAction="#CreateUser" prefHeight="33.0" prefWidth="152.0" text="Создать" textAlignment="CENTER" />
+            <Label fx:id="StatusCreate" layoutX="14.0" layoutY="14.0" text="Создание нового пользователя">
                <font>
-                  <Font name="System Bold" size="13.0" />
+                  <Font name="System Bold" size="14.0" />
                </font>
             </Label>
          </children>
