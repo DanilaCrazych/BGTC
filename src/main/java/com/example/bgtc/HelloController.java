@@ -93,6 +93,7 @@ public class HelloController implements Initializable {
         LeftPanel.setVisible(false);
         AdminUserAdd.setVisible(false);
         AutoParkPane.setVisible(true);
+        TableAutoPark.setVisible(true);
         try {
             IdCol.setCellValueFactory(new PropertyValueFactory<AutoPark, Integer>("id"));
             AutoCol.setCellValueFactory(new PropertyValueFactory<AutoPark, String>("auto"));
