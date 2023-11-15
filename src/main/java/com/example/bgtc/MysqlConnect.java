@@ -6,8 +6,10 @@ import javafx.collections.ObservableList;
 import java.sql.*;
 
 public class MysqlConnect {
-    public ObservableList<AutoPark> list = FXCollections.observableArrayList();
+    public ObservableList<AutoPark> listA = FXCollections.observableArrayList();
+    public ObservableList<Orders> listO = FXCollections.observableArrayList();
     static Connection conn;
+
     public static Connection ConnectBd() {
         HelloController hc = new HelloController();
         String url = hc.url;
@@ -25,14 +27,33 @@ public class MysqlConnect {
     public void dataAutoPark() {
         ConnectBd();
         String query = "SELECT * FROM AutoPark";
-        int id = 0;
-        String auto = "";
-        String grz = "";
         try {
             Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                list.add(new AutoPark(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+                listA.add(new AutoPark(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+            }
+        } catch (Exception ex) {
+            System.out.println("Connection failed...");
+            System.out.println(ex);
+        }
+    }
+
+    public void dataOrders() {
+        ConnectBd();
+        String query = "SELECT * FROM Orders";
+        int id;
+        String fio;
+        String adressot;
+        String adressto;
+        String phonenum;
+        String status;
+        try {
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                listO.add(new Orders(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)));
             }
         } catch (Exception ex) {
             System.out.println("Connection failed...");

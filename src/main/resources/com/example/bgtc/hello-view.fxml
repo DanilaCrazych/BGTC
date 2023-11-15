@@ -25,6 +25,30 @@
                </font>
             </Label>         </children>
       </Pane>
+      <Pane fx:id="LeftPanel" prefHeight="400.0" prefWidth="178.0" style="-fx-background-color: #0097B5;">
+         <children>
+            <Label fx:id="Date" layoutX="14.0" layoutY="14.0" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="AdministrirovanieLabel" layoutX="13.0" layoutY="35.0" onMouseClicked="#AdministrirovanieLabel" prefHeight="33.0" prefWidth="152.0" text="Администрирование" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="AutoPark" layoutX="13.0" layoutY="68.0" onMouseClicked="#AutoParkPane" prefHeight="18.0" prefWidth="134.0" text="Автопарк" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="OrdersLabel" layoutX="13.0" layoutY="94.0" onMouseClicked="#Orders" prefHeight="18.0" prefWidth="134.0" text="Заказы" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
       <Pane fx:id="AutoParkPane" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #0097B5;" visible="false">
          <children>
             <TableView fx:id="TableAutoPark" layoutX="178.0" layoutY="1.0" prefHeight="400.0" prefWidth="323.0">
@@ -39,21 +63,9 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-         </children>
-      </Pane>
-      <Pane fx:id="LeftPanel" prefHeight="400.0" prefWidth="178.0" style="-fx-background-color: #0097B5;">
-         <children>
-            <Label fx:id="Date" layoutX="14.0" layoutY="14.0" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Label>
-            <Label fx:id="AdministrirovanieLabel" layoutX="16.0" layoutY="33.0" onMouseClicked="#AdministrirovanieLabel" prefHeight="33.0" prefWidth="152.0" text="Администрирование" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Label>
-            <Label fx:id="AutoPark" layoutX="16.0" layoutY="68.0" onMouseClicked="#AutoParkPane" prefHeight="18.0" prefWidth="134.0" text="Автопарк" textFill="WHITE">
+            <TextField fx:id="AutoAdd" disable="true" layoutX="14.0" layoutY="34.0" promptText="Авто" />
+            <TextField fx:id="GRZAdd" disable="true" layoutX="14.0" layoutY="76.0" promptText="ГРЗ" />
+            <Label fx:id="AddAuto" layoutX="14.0" layoutY="125.0" onMouseClicked="#AddAutoA" prefHeight="19.0" prefWidth="134.0" text="Добавить траспорт" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
@@ -69,6 +81,25 @@
             <Label fx:id="StatusCreate" layoutX="14.0" layoutY="14.0" text="Создание нового пользователя">
                <font>
                   <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Pane fx:id="OrdersPane" layoutX="-3.0" layoutY="-3.0" prefHeight="411.0" prefWidth="508.0" style="-fx-background-color: #0097B5;">
+         <children>
+            <TableView fx:id="TableOrdrs" layoutX="65.0" layoutY="1.0" prefHeight="411.0" prefWidth="444.0">
+               <columns>
+                  <TableColumn fx:id="idColZ" prefWidth="75.0" text="Id" />
+                  <TableColumn fx:id="fioColZ" prefWidth="75.0" text="Фио" />
+                  <TableColumn fx:id="adresStartColZ" prefWidth="75.0" text="Адрес начальный" />
+                  <TableColumn fx:id="adresFinishColZ" prefWidth="75.0" text="Адрес конечный" />
+                  <TableColumn fx:id="numPhoneColZ" prefWidth="75.0" text="Номер телефона" />
+                  <TableColumn fx:id="statusColZ" prefWidth="75.0" text="Status" />
+               </columns>
+            </TableView>
+            <Label fx:id="ExitAutoPark" layoutX="14.0" layoutY="367.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="13.0" />
                </font>
             </Label>
          </children>

@@ -28,11 +28,11 @@ public class HelloController implements Initializable {
     public Connection connection;
 
     @FXML
-    private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark;
+    private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark, AddAuto, UpdateTable, OrdersLabel;
     @FXML
-    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass;
+    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd;
     @FXML
-    private Pane Auth, LeftPanel, AdminUserAdd, AutoParkPane;
+    private Pane Auth, LeftPanel, AdminUserAdd, AutoParkPane, OrdersPane;
     @FXML
     private Button LoginButton, CreateUser;
     @FXML
@@ -43,7 +43,26 @@ public class HelloController implements Initializable {
     private TableColumn<AutoPark, String> AutoCol;
     @FXML
     private TableView<AutoPark> TableAutoPark;
-    ObservableList<AutoPark> listM;
+
+    @FXML
+    private TableView<Orders> TableOrdrs;
+    @FXML
+    private TableColumn<Orders, Integer> idColZ;
+    @FXML
+    private TableColumn<Orders, String> fioColZ;
+    @FXML
+    private TableColumn<Orders, String> adresStartColZ;
+    @FXML
+    private TableColumn<Orders, String> adresFinishColZ;
+    @FXML
+    private TableColumn<Orders, String> numPhoneColZ;
+    @FXML
+    private TableColumn<Orders, String> statusColZ;
+
+    ObservableList<AutoPark> listA;
+    ObservableList<Orders> listO;
+    boolean statusAutoAdd = false;
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
     @FXML
     protected void Login() throws InterruptedException {
@@ -80,13 +99,11 @@ public class HelloController implements Initializable {
             ErrorLogin.setVisible(true);
         }
     }
-
     @FXML
     protected void AdministrirovanieLabel() {
         TableAutoPark.setVisible(false);
         AdminUserAdd.setVisible(true);
     }
-
     @FXML
     protected void AutoParkPane() {
         mysqlConnect.dataAutoPark();
@@ -99,13 +116,13 @@ public class HelloController implements Initializable {
             AutoCol.setCellValueFactory(new PropertyValueFactory<AutoPark, String>("auto"));
             GRZCol.setCellValueFactory(new PropertyValueFactory<AutoPark, String>("grz"));
 
-            listM = mysqlConnect.list;
-            TableAutoPark.setItems(listM);
+            listA = mysqlConnect.listA;
+            TableAutoPark.setItems(listA);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
     @FXML
     protected void CreateUser() {
         String LoginCreate = CreateUserLogin.getText();
@@ -123,24 +140,87 @@ public class HelloController implements Initializable {
             StatusCreate.setText("Ошибка!");
         }
     }
-
     @FXML
-    protected void Exit(){
+    protected void Exit() {
         LeftPanel.setVisible(true);
         AdminUserAdd.setVisible(false);
         AutoParkPane.setVisible(false);
-    }
+        OrdersPane.setVisible(false);
+        TableAutoPark.getItems().clear();
+        TableOrdrs.getItems().clear();
 
+        AutoAdd.clear();
+        GRZAdd.clear();
+        AutoAdd.setDisable(true);
+        GRZAdd.setDisable(true);
+        statusAutoAdd = false;
+    }
+    @FXML
+    protected void AddAutoA() {
+
+        if (statusAutoAdd == false) {
+            AutoAdd.setDisable(false);
+            GRZAdd.setDisable(false);
+            statusAutoAdd = true;
+        } else {
+            if (AutoAdd.getText().equals("") && GRZAdd.getText().equals("")) {
+                alert.setTitle("Ошибка");
+                alert.setHeaderText(null);
+                alert.setContentText("Заполните пустые поля!");
+                alert.showAndWait();
+            } else {
+                String autoadd = AutoAdd.getText();
+                String grzadd = GRZAdd.getText();
+                String query = "INSERT INTO `BGTC`.`AutoPark` (`auto`, `grz`) VALUES ('" + autoadd + "', '" + grzadd + "');";
+
+                try {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate(query);
+                    alert.setTitle("Информация");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Траснпорт добавлен!");
+                    alert.showAndWait();
+                } catch (Exception ex) {
+                    System.out.println("Connection failed...");
+                    System.out.println(ex);
+                    StatusCreate.setText("Ошибка!");
+                }
+            }
+        }
+    }
+    @FXML
+    protected void Orders() {
+    OrdersPane.setVisible(true);
+    LeftPanel.setVisible(false);
+    AdminUserAdd.setVisible(false);
+    AutoParkPane.setVisible(false);
+    mysqlConnect.dataOrders();
+
+        try {
+            idColZ.setCellValueFactory(new PropertyValueFactory<Orders, Integer>("id"));
+            fioColZ.setCellValueFactory(new PropertyValueFactory<Orders, String>("fio"));
+            adresStartColZ.setCellValueFactory(new PropertyValueFactory<Orders, String>("adressot"));
+            adresFinishColZ.setCellValueFactory(new PropertyValueFactory<Orders, String>("adressto"));
+            numPhoneColZ.setCellValueFactory(new PropertyValueFactory<Orders, String>("phonenum"));
+            statusColZ.setCellValueFactory(new PropertyValueFactory<Orders, String>("status"));
+
+            listO = mysqlConnect.listO;
+            TableOrdrs.setItems(listO);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ConnectBd();
-        FadeTransition leftpaneFade = new FadeTransition(Duration.seconds(1), LeftPanel);
+        FadeTransition leftpaneFade = new FadeTransition(Duration.seconds(0.001), LeftPanel);
         leftpaneFade.setByValue(1.0);
         leftpaneFade.setToValue(0);
         leftpaneFade.play();
         Date.setText("Дата: " + formatter.format(date));
     }
-
     public void ConnectBd() {
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -150,7 +230,6 @@ public class HelloController implements Initializable {
             printSQLException(e);
         }
     }
-
     public static void printSQLException(SQLException ex) {
         for (Throwable e : ex) {
             if (e instanceof SQLException) {
