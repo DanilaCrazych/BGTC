@@ -3,12 +3,15 @@ package com.example.bgtc;
 import javafx.animation.FadeTransition;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.net.URL;
@@ -21,28 +24,30 @@ public class HelloController implements Initializable {
     MysqlConnect mysqlConnect = new MysqlConnect();
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
     Date date = new Date(System.currentTimeMillis());
+    String ipAddress;
     String url = "jdbc:mysql://192.168.0.179:3306/BGTC";
-    //   public String url = "jdbc:mysql://IP_ADDR:3306/BGTC";
+    //    String url = "jdbc:mysql://IP_ADDRESS:3306/BGTC";
     String user = "Danilas";
     String password = "p@ssw0rd";
     public Connection connection;
 
     @FXML
-    private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark, AddAuto, UpdateTable, OrdersLabel;
+    private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark, AddAuto, UpdateTable, OrdersLabel, OrderAdd;
     @FXML
-    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd;
+    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd, FioAdd, AdressOtAdd, AdressToAdd, PhoneNumAdd;
     @FXML
     private Pane Auth, LeftPanel, AdminUserAdd, AutoParkPane, OrdersPane;
     @FXML
     private Button LoginButton, CreateUser;
+
+    @FXML
+    private TableView<AutoPark> TableAutoPark;
     @FXML
     private TableColumn<AutoPark, String> GRZCol;
     @FXML
     private TableColumn<AutoPark, Integer> IdCol;
     @FXML
     private TableColumn<AutoPark, String> AutoCol;
-    @FXML
-    private TableView<AutoPark> TableAutoPark;
 
     @FXML
     private TableView<Orders> TableOrdrs;
@@ -62,11 +67,13 @@ public class HelloController implements Initializable {
     ObservableList<AutoPark> listA;
     ObservableList<Orders> listO;
     boolean statusAutoAdd = false;
+    boolean statusOrderAdd = false;
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
     @FXML
     protected void Login() throws InterruptedException {
-        String query = "SELECT login, password FROM users";
+//        String query = "SELECT login, password FROM users";
+        String query = "SELECT login, password FROM users WHERE login LIKE '"+AuthLoginField.getText()+"'";
         String loginAuth = "";
         String passAuth = "";
         try {
@@ -99,11 +106,13 @@ public class HelloController implements Initializable {
             ErrorLogin.setVisible(true);
         }
     }
+
     @FXML
     protected void AdministrirovanieLabel() {
         TableAutoPark.setVisible(false);
         AdminUserAdd.setVisible(true);
     }
+
     @FXML
     protected void AutoParkPane() {
         mysqlConnect.dataAutoPark();
@@ -123,6 +132,7 @@ public class HelloController implements Initializable {
             throw new RuntimeException(e);
         }
     }
+
     @FXML
     protected void CreateUser() {
         String LoginCreate = CreateUserLogin.getText();
@@ -140,6 +150,7 @@ public class HelloController implements Initializable {
             StatusCreate.setText("Ошибка!");
         }
     }
+
     @FXML
     protected void Exit() {
         LeftPanel.setVisible(true);
@@ -153,8 +164,20 @@ public class HelloController implements Initializable {
         GRZAdd.clear();
         AutoAdd.setDisable(true);
         GRZAdd.setDisable(true);
+
+        FioAdd.setDisable(true);
+        AdressOtAdd.setDisable(true);
+        AdressToAdd.setDisable(true);
+        PhoneNumAdd.setDisable(true);
+        FioAdd.clear();
+        AdressOtAdd.clear();
+        AdressToAdd.clear();
+        PhoneNumAdd.clear();
+
         statusAutoAdd = false;
+        statusOrderAdd = false;
     }
+
     @FXML
     protected void AddAutoA() {
 
@@ -163,7 +186,7 @@ public class HelloController implements Initializable {
             GRZAdd.setDisable(false);
             statusAutoAdd = true;
         } else {
-            if (AutoAdd.getText().equals("") && GRZAdd.getText().equals("")) {
+            if (AutoAdd.getText().equals("") | GRZAdd.getText().equals("")) {
                 alert.setTitle("Ошибка");
                 alert.setHeaderText(null);
                 alert.setContentText("Заполните пустые поля!");
@@ -188,13 +211,15 @@ public class HelloController implements Initializable {
             }
         }
     }
+
     @FXML
     protected void Orders() {
-    OrdersPane.setVisible(true);
-    LeftPanel.setVisible(false);
-    AdminUserAdd.setVisible(false);
-    AutoParkPane.setVisible(false);
-    mysqlConnect.dataOrders();
+        HelloApplication ha = new HelloApplication();
+        OrdersPane.setVisible(true);
+        LeftPanel.setVisible(false);
+        AdminUserAdd.setVisible(false);
+        AutoParkPane.setVisible(false);
+        mysqlConnect.dataOrders();
 
         try {
             idColZ.setCellValueFactory(new PropertyValueFactory<Orders, Integer>("id"));
@@ -209,9 +234,44 @@ public class HelloController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
     }
+
+    @FXML
+    protected void OrderAdd() {
+        if (statusOrderAdd==false){
+            FioAdd.setDisable(false);
+            AdressOtAdd.setDisable(false);
+            AdressToAdd.setDisable(false);
+            PhoneNumAdd.setDisable(false);
+            statusOrderAdd = true;
+        } else if (FioAdd.equals("")|AdressOtAdd.equals("")|AdressToAdd.equals("")|PhoneNumAdd.equals("")) {
+            alert.setTitle("Ошибка");
+            alert.setHeaderText(null);
+            alert.setContentText("Заполните пустые поля!");
+            alert.showAndWait();
+        } else {
+            String FioAddOrder = FioAdd.getText();
+            String Adressot = AdressOtAdd.getText();
+            String Adressto = AdressToAdd.getText();
+            String Phonenum = PhoneNumAdd.getText();
+            String query = "INSERT INTO `BGTC`.`Orders` (`fio`, `adressot`,`adressto`, `phonenum`, `status` ) VALUES ('" + FioAddOrder + "', '" + Adressot + "', '"
+                    + Adressto + "', '" + Phonenum + "', 'Выполняется');";
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(query);
+                alert.setTitle("Информация");
+                alert.setHeaderText(null);
+                alert.setContentText("Заказ создан");
+                alert.showAndWait();
+            } catch (Exception ex) {
+                System.out.println("Connection failed...");
+                System.out.println(ex);
+                StatusCreate.setText("Ошибка!");
+            }
+
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ConnectBd();
@@ -221,6 +281,7 @@ public class HelloController implements Initializable {
         leftpaneFade.play();
         Date.setText("Дата: " + formatter.format(date));
     }
+
     public void ConnectBd() {
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -230,6 +291,7 @@ public class HelloController implements Initializable {
             printSQLException(e);
         }
     }
+
     public static void printSQLException(SQLException ex) {
         for (Throwable e : ex) {
             if (e instanceof SQLException) {
