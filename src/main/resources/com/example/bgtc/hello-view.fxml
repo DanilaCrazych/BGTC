@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -11,9 +13,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="398.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bgtc.HelloController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" prefWidth="1110.0" style="-fx-background-color: #d0d0d0;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bgtc.HelloController">
    <children>
-      <Pane fx:id="Auth" layoutX="177.0" prefHeight="400.0" prefWidth="315.0">
+      <Pane fx:id="Auth" layoutX="398.0" layoutY="14.0" prefHeight="400.0" prefWidth="315.0">
          <children>
             <TextField fx:id="AuthLoginField" layoutX="14.0" layoutY="56.0" promptText="Login" />
             <PasswordField fx:id="AuthPassField" layoutX="14.0" layoutY="100.0" promptText="Password" />
@@ -25,51 +27,51 @@
                </font>
             </Label>         </children>
       </Pane>
-      <Pane fx:id="LeftPanel" prefHeight="400.0" prefWidth="178.0" style="-fx-background-color: #0097B5;">
+      <Pane fx:id="LeftPanel" prefHeight="505.0" prefWidth="178.0" style="-fx-background-color: #ffffff;" visible="false">
          <children>
-            <Label fx:id="Date" layoutX="14.0" layoutY="14.0" textFill="WHITE">
+            <Label fx:id="Date" layoutX="14.0" layoutY="14.0">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="AdministrirovanieLabel" layoutX="13.0" layoutY="35.0" onMouseClicked="#AdministrirovanieLabel" prefHeight="33.0" prefWidth="152.0" text="Администрирование" textFill="WHITE">
+            <Label fx:id="AdministrirovanieLabel" layoutX="13.0" layoutY="35.0" onMouseClicked="#AdministrirovanieLabel" prefHeight="33.0" prefWidth="152.0" text="Администрирование">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="AutoPark" layoutX="13.0" layoutY="68.0" onMouseClicked="#AutoParkPane" prefHeight="18.0" prefWidth="134.0" text="Автопарк" textFill="WHITE">
+            <Label fx:id="AutoPark" layoutX="13.0" layoutY="68.0" onMouseClicked="#AutoParkPane" prefHeight="18.0" prefWidth="134.0" text="Автопарк">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="OrdersLabel" layoutX="13.0" layoutY="94.0" onMouseClicked="#Orders" prefHeight="18.0" prefWidth="134.0" text="Заказы" textFill="WHITE">
+            <Label fx:id="OrdersLabel" layoutX="13.0" layoutY="94.0" onMouseClicked="#Orders" prefHeight="18.0" prefWidth="134.0" text="Заказы">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
          </children>
       </Pane>
-      <Pane fx:id="AutoParkPane" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #0097B5;" visible="false">
+      <Pane fx:id="AutoParkPane" prefHeight="505.0" prefWidth="178.0" style="-fx-background-color: #ffffff;" visible="false">
          <children>
-            <TableView fx:id="TableAutoPark" layoutX="178.0" layoutY="1.0" prefHeight="400.0" prefWidth="323.0">
-              <columns>
-                <TableColumn fx:id="IdCol" prefWidth="75.0" text="Id" />
-                <TableColumn fx:id="AutoCol" prefWidth="75.0" text="Авто" />
-                  <TableColumn fx:id="GRZCol" prefWidth="75.0" text="ГРЗ" />
-              </columns>
-            </TableView>
-            <Label fx:id="ExitAutoPark" layoutX="14.0" layoutY="367.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход" textFill="WHITE">
+            <Label fx:id="ExitAutoPark" layoutX="14.0" layoutY="367.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
             <TextField fx:id="AutoAdd" disable="true" layoutX="14.0" layoutY="34.0" promptText="Авто" />
             <TextField fx:id="GRZAdd" disable="true" layoutX="14.0" layoutY="76.0" promptText="ГРЗ" />
-            <Label fx:id="AddAuto" layoutX="14.0" layoutY="125.0" onMouseClicked="#AddAutoA" prefHeight="19.0" prefWidth="134.0" text="Добавить траспорт" textFill="WHITE">
+            <Label fx:id="AddAuto" layoutX="14.0" layoutY="125.0" onMouseClicked="#AddAutoA" prefHeight="19.0" prefWidth="134.0" text="Добавить траспорт">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
+            <TableView fx:id="TableAutoPark" layoutX="178.0" prefHeight="505.0" prefWidth="933.0" visible="false">
+              <columns>
+                <TableColumn fx:id="IdCol" prefWidth="75.0" text="Id" />
+                <TableColumn fx:id="AutoCol" prefWidth="75.0" text="Авто" />
+                  <TableColumn fx:id="GRZCol" prefWidth="75.0" text="ГРЗ" />
+              </columns>
+            </TableView>
          </children>
       </Pane>
       <Pane fx:id="AdminUserAdd" layoutX="177.0" prefHeight="400.0" prefWidth="323.0" visible="false">
@@ -85,9 +87,9 @@
             </Label>
          </children>
       </Pane>
-      <Pane fx:id="OrdersPane" layoutX="-3.0" layoutY="-3.0" prefHeight="402.0" prefWidth="779.0" style="-fx-background-color: #0097B5;">
+      <Pane fx:id="OrdersPane" layoutX="-3.0" layoutY="-3.0" prefHeight="505.0" prefWidth="1110.0" style="-fx-background-color: #ffffff;">
          <children>
-            <TableView fx:id="TableOrdrs" layoutX="162.0" prefHeight="402.0" prefWidth="641.0">
+            <TableView fx:id="TableOrdrs" layoutX="162.0" prefHeight="505.0" prefWidth="950.0">
                <columns>
                   <TableColumn fx:id="idColZ" prefWidth="75.0" text="Id" />
                   <TableColumn fx:id="fioColZ" prefWidth="107.0" text="Фио" />
@@ -107,13 +109,29 @@
             </Label>
             <TextField fx:id="FioAdd" disable="true" layoutX="10.0" layoutY="47.0" promptText="Фио" />
             <TextField fx:id="AdressOtAdd" disable="true" layoutX="10.0" layoutY="81.0" promptText="Адрес начальный" />
-            <Label fx:id="OrderAdd" layoutX="10.0" layoutY="192.0" onMouseClicked="#OrderAdd" prefHeight="19.0" prefWidth="134.0" text="Создать заказ" textFill="WHITE">
+            <Label fx:id="OrderAdd" layoutX="10.0" layoutY="234.0" onMouseClicked="#OrderAdd" prefHeight="19.0" prefWidth="134.0" text="Создать заказ">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
             <TextField fx:id="AdressToAdd" disable="true" layoutX="10.0" layoutY="121.0" promptText="Адрес конечный" />
             <TextField fx:id="PhoneNumAdd" disable="true" layoutX="10.0" layoutY="159.0" promptText="Номер телефона" />
+            <Label fx:id="ExitAutoPark1" layoutX="12.0" layoutY="469.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="idCombo" disable="true" layoutX="11.0" layoutY="14.0" onAction="#IdComboChange" prefWidth="150.0" promptText="id" />
+            <Label fx:id="ChangeLabel" layoutX="10.0" layoutY="253.0" onMouseClicked="#OrdersChange" prefHeight="19.0" prefWidth="134.0" text="Изменить">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="StatusCheck" alignment="CENTER" layoutX="12.0" layoutY="198.0" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="Выполнен">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </CheckBox>
          </children>
       </Pane>
    </children>

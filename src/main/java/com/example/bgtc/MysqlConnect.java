@@ -8,6 +8,7 @@ import java.sql.*;
 public class MysqlConnect {
     public ObservableList<AutoPark> listA = FXCollections.observableArrayList();
     public ObservableList<Orders> listO = FXCollections.observableArrayList();
+    public ObservableList<Orders> listOC = FXCollections.observableArrayList();
     static Connection conn;
 
     public static Connection ConnectBd() {

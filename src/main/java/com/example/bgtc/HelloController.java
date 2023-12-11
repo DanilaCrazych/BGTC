@@ -32,13 +32,17 @@ public class HelloController implements Initializable {
     public Connection connection;
 
     @FXML
-    private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark, AddAuto, UpdateTable, OrdersLabel, OrderAdd;
+    private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark, AddAuto, UpdateTable, OrdersLabel, OrderAdd, ChangeLabel;
     @FXML
     private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd, FioAdd, AdressOtAdd, AdressToAdd, PhoneNumAdd;
     @FXML
     private Pane Auth, LeftPanel, AdminUserAdd, AutoParkPane, OrdersPane;
     @FXML
     private Button LoginButton, CreateUser;
+    @FXML
+    private ComboBox idCombo;
+    @FXML
+    private CheckBox StatusCheck;
 
     @FXML
     private TableView<AutoPark> TableAutoPark;
@@ -66,8 +70,10 @@ public class HelloController implements Initializable {
 
     ObservableList<AutoPark> listA;
     ObservableList<Orders> listO;
+
     boolean statusAutoAdd = false;
     boolean statusOrderAdd = false;
+    boolean StatusOrderChange = false;
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
     @FXML
@@ -169,10 +175,12 @@ public class HelloController implements Initializable {
         AdressOtAdd.setDisable(true);
         AdressToAdd.setDisable(true);
         PhoneNumAdd.setDisable(true);
+        idCombo.setDisable(true);
         FioAdd.clear();
         AdressOtAdd.clear();
         AdressToAdd.clear();
         PhoneNumAdd.clear();
+        StatusCheck.setSelected(false);
 
         statusAutoAdd = false;
         statusOrderAdd = false;
@@ -234,6 +242,10 @@ public class HelloController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        for (int i = 0; i < listO.size(); i++){
+            idCombo.getItems().addAll(listO.get(i).id);
+        }
+
     }
 
     @FXML
@@ -270,6 +282,54 @@ public class HelloController implements Initializable {
             }
 
         }
+    }
+
+    @FXML
+    public void OrdersChange(){
+        FioAdd.setDisable(false);
+        AdressOtAdd.setDisable(false);
+        AdressToAdd.setDisable(false);
+        PhoneNumAdd.setDisable(false);
+        idCombo.setDisable(false);
+        String FioA = FioAdd.getText();
+        String AdressOtA = AdressOtAdd.getText();
+        String AdressToA = AdressToAdd.getText();
+        String PhoneNumA = PhoneNumAdd.getText();
+        String StatusA = "";
+        if (StatusCheck.isSelected()){
+            StatusA = "Выполнен";
+        }else {
+            StatusA = "Выполняется";
+        }
+        if (StatusOrderChange==true) {
+            String query = "UPDATE `BGTC`.`Orders` SET `fio` = '"+FioA+"', `adressot` = '"+AdressOtA+"', `adressto` = '"+AdressToA+"', `phonenum` = '"+PhoneNumA+"', `status` = '"+StatusA+"' WHERE (`id` = '"+idCombo.getValue()+"')";
+
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(query);
+                alert.setTitle("Информация");
+                alert.setHeaderText(null);
+                alert.setContentText("Данные обновлены");
+                alert.showAndWait();
+            } catch (Exception ex) {
+                System.out.println("Connection failed...");
+                System.out.println(ex);
+            }
+        }
+        StatusOrderChange = true;
+    }
+
+
+    @FXML
+    public void IdComboChange(){
+       for (int i = 0; i<listO.size(); i++){
+           if(idCombo.getValue().equals(listO.get(i).id)){
+               FioAdd.setText(listO.get(i).fio);
+               AdressOtAdd.setText(listO.get(i).adressot);
+               AdressToAdd.setText(listO.get(i).adressto);
+               PhoneNumAdd.setText(listO.get(i).phonenum);
+           }
+       }
     }
 
     @Override
