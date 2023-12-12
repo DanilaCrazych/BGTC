@@ -9,6 +9,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
@@ -25,9 +27,14 @@
                <font>
                   <Font size="15.0" />
                </font>
-            </Label>         </children>
+            </Label>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="146.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Coming%20soon.png" />
+               </image>
+            </ImageView>         </children>
       </Pane>
-      <Pane fx:id="LeftPanel" prefHeight="505.0" prefWidth="178.0" style="-fx-background-color: #ffffff;" visible="false">
+      <Pane fx:id="LeftPanel" prefHeight="505.0" prefWidth="178.0" style="-fx-background-color: #ffffff;">
          <children>
             <Label fx:id="Date" layoutX="14.0" layoutY="14.0">
                <font>
@@ -53,14 +60,14 @@
       </Pane>
       <Pane fx:id="AutoParkPane" prefHeight="505.0" prefWidth="178.0" style="-fx-background-color: #ffffff;" visible="false">
          <children>
-            <Label fx:id="ExitAutoPark" layoutX="14.0" layoutY="367.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход">
+            <Label fx:id="ExitAutoPark" layoutX="7.0" layoutY="472.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <TextField fx:id="AutoAdd" disable="true" layoutX="14.0" layoutY="34.0" promptText="Авто" />
-            <TextField fx:id="GRZAdd" disable="true" layoutX="14.0" layoutY="76.0" promptText="ГРЗ" />
-            <Label fx:id="AddAuto" layoutX="14.0" layoutY="125.0" onMouseClicked="#AddAutoA" prefHeight="19.0" prefWidth="134.0" text="Добавить траспорт">
+            <TextField fx:id="AutoAdd" disable="true" layoutX="11.0" layoutY="94.0" promptText="Авто" />
+            <TextField fx:id="GRZAdd" disable="true" layoutX="13.0" layoutY="140.0" promptText="ГРЗ" />
+            <Label fx:id="AddAuto" layoutX="11.0" layoutY="202.0" onMouseClicked="#AddAutoA" prefHeight="19.0" prefWidth="134.0" text="Добавить траспорт">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
@@ -72,6 +79,17 @@
                   <TableColumn fx:id="GRZCol" prefWidth="75.0" text="ГРЗ" />
               </columns>
             </TableView>
+            <ComboBox fx:id="idCombo1" disable="true" layoutX="12.0" layoutY="39.0" onAction="#IdComboChangePark" prefWidth="150.0" promptText="id" />
+            <Label fx:id="ChangeLabel1" layoutX="11.0" layoutY="234.0" onMouseClicked="#AutoChange" prefHeight="19.0" prefWidth="134.0" text="Изменить">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="DelLabel" layoutX="11.0" layoutY="261.0" onMouseClicked="#DeleteAuto" prefHeight="19.0" prefWidth="134.0" text="Удалить">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <Pane fx:id="AdminUserAdd" layoutX="177.0" prefHeight="400.0" prefWidth="323.0" visible="false">
@@ -87,7 +105,7 @@
             </Label>
          </children>
       </Pane>
-      <Pane fx:id="OrdersPane" layoutX="-3.0" layoutY="-3.0" prefHeight="505.0" prefWidth="1110.0" style="-fx-background-color: #ffffff;">
+      <Pane fx:id="OrdersPane" layoutX="-3.0" layoutY="-3.0" prefHeight="505.0" prefWidth="1110.0" style="-fx-background-color: #ffffff;" visible="false">
          <children>
             <TableView fx:id="TableOrdrs" layoutX="162.0" prefHeight="505.0" prefWidth="950.0">
                <columns>
@@ -122,7 +140,7 @@
                </font>
             </Label>
             <ComboBox fx:id="idCombo" disable="true" layoutX="11.0" layoutY="14.0" onAction="#IdComboChange" prefWidth="150.0" promptText="id" />
-            <Label fx:id="ChangeLabel" layoutX="10.0" layoutY="253.0" onMouseClicked="#OrdersChange" prefHeight="19.0" prefWidth="134.0" text="Изменить">
+            <Label fx:id="ChangeLabel" layoutX="10.0" layoutY="263.0" onMouseClicked="#OrdersChange" prefHeight="19.0" prefWidth="134.0" text="Изменить">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
@@ -132,6 +150,17 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </CheckBox>
+            <Label fx:id="DelOrders" layoutX="10.0" layoutY="294.0" onMouseClicked="#DelOrder" prefHeight="19.0" prefWidth="134.0" text="Удалить">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="Print" layoutX="12.0" layoutY="441.0" onMouseClicked="#CreateExcel" prefHeight="19.0" prefWidth="48.0" text="Печать">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="PrintName" layoutX="14.0" layoutY="415.0" prefHeight="26.0" prefWidth="144.0" promptText="Имя файла" visible="false" />
          </children>
       </Pane>
    </children>

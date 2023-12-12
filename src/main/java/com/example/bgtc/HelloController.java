@@ -11,14 +11,24 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.Date;
-import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
     MysqlConnect mysqlConnect = new MysqlConnect();
@@ -32,15 +42,15 @@ public class HelloController implements Initializable {
     public Connection connection;
 
     @FXML
-    private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark, AddAuto, UpdateTable, OrdersLabel, OrderAdd, ChangeLabel;
+    private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark, AddAuto, UpdateTable, OrdersLabel, OrderAdd, ChangeLabel, ChangeLabel1, DelOrders, Print;
     @FXML
-    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd, FioAdd, AdressOtAdd, AdressToAdd, PhoneNumAdd;
+    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd, FioAdd, AdressOtAdd, AdressToAdd, PhoneNumAdd, PrintName;
     @FXML
     private Pane Auth, LeftPanel, AdminUserAdd, AutoParkPane, OrdersPane;
     @FXML
     private Button LoginButton, CreateUser;
     @FXML
-    private ComboBox idCombo;
+    private ComboBox idCombo, idCombo1;
     @FXML
     private CheckBox StatusCheck;
 
@@ -70,16 +80,21 @@ public class HelloController implements Initializable {
 
     ObservableList<AutoPark> listA;
     ObservableList<Orders> listO;
+    ArrayList<Integer> listDelPark;
 
     boolean statusAutoAdd = false;
     boolean statusOrderAdd = false;
     boolean StatusOrderChange = false;
+    boolean StatusAutoChange = false;
+    boolean StatusAutoDel = false;
+    boolean StatusOrderDel = false;
+    boolean StatusPrint = false;
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
     @FXML
     protected void Login() throws InterruptedException {
 //        String query = "SELECT login, password FROM users";
-        String query = "SELECT login, password FROM users WHERE login LIKE '"+AuthLoginField.getText()+"'";
+        String query = "SELECT login, password FROM users WHERE login LIKE '" + AuthLoginField.getText() + "'";
         String loginAuth = "";
         String passAuth = "";
         try {
@@ -137,6 +152,9 @@ public class HelloController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        for (int i = 0; i < listA.size(); i++) {
+            idCombo1.getItems().addAll(listA.get(i).id);
+        }
     }
 
     @FXML
@@ -181,9 +199,15 @@ public class HelloController implements Initializable {
         AdressToAdd.clear();
         PhoneNumAdd.clear();
         StatusCheck.setSelected(false);
+        idCombo1.setDisable(true);
 
         statusAutoAdd = false;
         statusOrderAdd = false;
+        StatusOrderChange = false;
+        StatusAutoChange = false;
+        StatusAutoDel = false;
+        StatusOrderDel = false;
+        StatusPrint = false;
     }
 
     @FXML
@@ -216,6 +240,7 @@ public class HelloController implements Initializable {
                     System.out.println(ex);
                     StatusCreate.setText("Ошибка!");
                 }
+
             }
         }
     }
@@ -228,6 +253,7 @@ public class HelloController implements Initializable {
         AdminUserAdd.setVisible(false);
         AutoParkPane.setVisible(false);
         mysqlConnect.dataOrders();
+
 
         try {
             idColZ.setCellValueFactory(new PropertyValueFactory<Orders, Integer>("id"));
@@ -242,7 +268,7 @@ public class HelloController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        for (int i = 0; i < listO.size(); i++){
+        for (int i = 0; i < listO.size(); i++) {
             idCombo.getItems().addAll(listO.get(i).id);
         }
 
@@ -250,13 +276,13 @@ public class HelloController implements Initializable {
 
     @FXML
     protected void OrderAdd() {
-        if (statusOrderAdd==false){
+        if (statusOrderAdd == false) {
             FioAdd.setDisable(false);
             AdressOtAdd.setDisable(false);
             AdressToAdd.setDisable(false);
             PhoneNumAdd.setDisable(false);
             statusOrderAdd = true;
-        } else if (FioAdd.equals("")|AdressOtAdd.equals("")|AdressToAdd.equals("")|PhoneNumAdd.equals("")) {
+        } else if (FioAdd.equals("") | AdressOtAdd.equals("") | AdressToAdd.equals("") | PhoneNumAdd.equals("")) {
             alert.setTitle("Ошибка");
             alert.setHeaderText(null);
             alert.setContentText("Заполните пустые поля!");
@@ -280,12 +306,38 @@ public class HelloController implements Initializable {
                 System.out.println(ex);
                 StatusCreate.setText("Ошибка!");
             }
-
         }
     }
 
+
     @FXML
-    public void OrdersChange(){
+    public void AutoChange() {
+        AutoAdd.setDisable(false);
+        GRZAdd.setDisable(false);
+        idCombo1.setDisable(false);
+
+        String AutoA = AutoAdd.getText();
+        String GRZA = GRZAdd.getText();
+
+        if (StatusOrderChange == true) {
+            String query = "UPDATE `BGTC`.`AutoPark` SET `auto` = '" + AutoA + "', `grz` = '" + GRZA + "' WHERE (`id` = '" + idCombo1.getValue() + "');";
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(query);
+                alert.setTitle("Информация");
+                alert.setHeaderText(null);
+                alert.setContentText("Данные обновлены");
+                alert.showAndWait();
+            } catch (Exception ex) {
+                System.out.println("Connection failed...");
+                System.out.println(ex);
+            }
+        }
+        StatusOrderChange = true;
+    }
+
+    @FXML
+    public void OrdersChange() {
         FioAdd.setDisable(false);
         AdressOtAdd.setDisable(false);
         AdressToAdd.setDisable(false);
@@ -296,13 +348,13 @@ public class HelloController implements Initializable {
         String AdressToA = AdressToAdd.getText();
         String PhoneNumA = PhoneNumAdd.getText();
         String StatusA = "";
-        if (StatusCheck.isSelected()){
+        if (StatusCheck.isSelected()) {
             StatusA = "Выполнен";
-        }else {
+        } else {
             StatusA = "Выполняется";
         }
-        if (StatusOrderChange==true) {
-            String query = "UPDATE `BGTC`.`Orders` SET `fio` = '"+FioA+"', `adressot` = '"+AdressOtA+"', `adressto` = '"+AdressToA+"', `phonenum` = '"+PhoneNumA+"', `status` = '"+StatusA+"' WHERE (`id` = '"+idCombo.getValue()+"')";
+        if (StatusOrderChange == true) {
+            String query = "UPDATE `BGTC`.`Orders` SET `fio` = '" + FioA + "', `adressot` = '" + AdressOtA + "', `adressto` = '" + AdressToA + "', `phonenum` = '" + PhoneNumA + "', `status` = '" + StatusA + "' WHERE (`id` = '" + idCombo.getValue() + "')";
 
             try {
                 Statement statement = connection.createStatement();
@@ -321,16 +373,165 @@ public class HelloController implements Initializable {
 
 
     @FXML
-    public void IdComboChange(){
-       for (int i = 0; i<listO.size(); i++){
-           if(idCombo.getValue().equals(listO.get(i).id)){
-               FioAdd.setText(listO.get(i).fio);
-               AdressOtAdd.setText(listO.get(i).adressot);
-               AdressToAdd.setText(listO.get(i).adressto);
-               PhoneNumAdd.setText(listO.get(i).phonenum);
-           }
-       }
+    public void IdComboChange() {
+        for (int i = 0; i < listO.size(); i++) {
+            if (idCombo.getValue().equals(listO.get(i).id)) {
+                FioAdd.setText(listO.get(i).fio);
+                AdressOtAdd.setText(listO.get(i).adressot);
+                AdressToAdd.setText(listO.get(i).adressto);
+                PhoneNumAdd.setText(listO.get(i).phonenum);
+            }
+        }
     }
+
+    @FXML
+    public void IdComboChangePark() {
+        for (int i = 0; i < listA.size(); i++) {
+            if (idCombo1.getValue().equals(listA.get(i).id)) {
+                AutoAdd.setText(listA.get(i).auto);
+                GRZAdd.setText(listA.get(i).grz);
+            }
+        }
+    }
+    @FXML
+    public void DeleteAuto() {
+        idCombo1.setDisable(false);
+        if (StatusAutoDel == true) {
+            String query = "DELETE FROM `BGTC`.`AutoPark` WHERE (`id` = '" + idCombo1.getValue() + "');";
+            List<Object> IdComboInt = new ArrayList<Object>();
+            IdComboInt.add(idCombo1.getValue());
+            int idComboBox = Integer.parseInt(IdComboInt.get(0).toString());
+//            try {
+//                for (int i = 0; i < listA.size(); i++) {
+//                    if (i >= idComboBox) {
+//                        try {
+//                            listDelPark.add(listA.get(i).id);
+//                            int j = i+1;
+//                            Statement statement = connection.createStatement();
+//                            statement.executeUpdate("UPDATE `BGTC`.`AutoPark` SET `id` = '" + j + "' WHERE (`id` = '" + listDelPark.get(i) + "');");
+//                        } catch (Exception ex) {
+//                            System.out.println("Connection failed...");
+//                            System.out.println(ex);
+//                        }
+//                    }
+//                }
+//            } catch (Exception ex) {
+//                System.out.println("Connection failed...");
+//                System.out.println(ex);
+//            }
+            try {
+                try {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate(query);
+                    alert.setTitle("Информация");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Данные удалены");
+                    alert.showAndWait();
+                } catch (Exception ex) {
+                    System.out.println("Connection failed...");
+                    System.out.println(ex);
+                }
+
+                try {
+                    int Increment = listA.size() + 1;
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate("ALTER TABLE AutoPark AUTO_INCREMENT = " + Increment + "");
+                } catch (Exception ex) {
+                    System.out.println("Connection failed...");
+                    System.out.println(ex);
+                }
+            } catch (Exception exception) {
+                System.out.println("Connection failed...");
+                System.out.println(exception);
+            }
+        }
+        StatusAutoDel = true;
+    }
+
+
+    @FXML
+    public void DelOrder(){
+        idCombo.setDisable(false);
+        if (StatusOrderDel == true) {
+            String query = "DELETE FROM `BGTC`.`Orders` WHERE (`id` = '" + idCombo.getValue() + "');";
+            List<Object> IdComboInt = new ArrayList<Object>();
+            IdComboInt.add(idCombo.getValue());
+            int idComboBox = Integer.parseInt(IdComboInt.get(0).toString());
+            try {
+                try {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate(query);
+
+                } catch (Exception ex) {
+                    System.out.println("Connection failed...");
+                    System.out.println(ex);
+                }
+                try {
+                    int Increment = listO.size();
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate("ALTER TABLE Orders AUTO_INCREMENT = " + Increment + "");
+                } catch (Exception ex) {
+                    System.out.println("Connection failed...");
+                    System.out.println(ex);
+                }
+            } catch (Exception exception) {
+                System.out.println("Connection failed...");
+                System.out.println(exception);
+            }
+        }
+        StatusOrderDel = true;
+        alert.setTitle("Информация");
+        alert.setHeaderText(null);
+        alert.setContentText("Данные удалены");
+        alert.showAndWait();
+    }
+        @FXML
+        public void CreateExcel() {
+            if (StatusPrint == true) {
+                String printName = PrintName.getText();
+                try {
+                    listO = mysqlConnect.listO;
+                    TableOrdrs.setItems(listO);
+                    DirectoryChooser directoryChooser = new DirectoryChooser();
+                    directoryChooser.setTitle("Создание Excel");
+                    String direct = directoryChooser.showDialog(null).toString();
+                    String path = direct + "\\"+printName+".xls";
+
+                    HSSFWorkbook workbook = new HSSFWorkbook();
+                    HSSFSheet sheet = workbook.createSheet("Лист1");
+
+                    HSSFRow rowhead = sheet.createRow((short) 0);
+                    rowhead.createCell(0).setCellValue("Номер");
+                    rowhead.createCell(1).setCellValue("ФИО");
+                    rowhead.createCell(2).setCellValue("Адрес начальный");
+                    rowhead.createCell(3).setCellValue("Адрес конечный");
+                    rowhead.createCell(4).setCellValue("Телефон");
+
+
+                    int j = 1;
+                    for (int i = 0; i < listO.size(); i++) {
+                        HSSFRow row = sheet.createRow((short) j);
+                        row.createCell(0).setCellValue(listO.get(i).id);
+                        row.createCell(1).setCellValue(listO.get(i).fio);
+                        row.createCell(2).setCellValue(listO.get(i).adressot);
+                        row.createCell(3).setCellValue(listO.get(i).adressto);
+                        row.createCell(4).setCellValue(listO.get(i).phonenum);
+                        j++;
+                    }
+                    FileOutputStream fileOut = new FileOutputStream(path);
+                    workbook.write(fileOut);
+                    fileOut.close();
+                    workbook.close();
+                    System.out.println("Your excel file has been generated!");
+
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }
+            PrintName.setVisible(true);
+            StatusPrint=true;
+        }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -340,6 +541,7 @@ public class HelloController implements Initializable {
         leftpaneFade.setToValue(0);
         leftpaneFade.play();
         Date.setText("Дата: " + formatter.format(date));
+
     }
 
     public void ConnectBd() {
