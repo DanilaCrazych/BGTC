@@ -182,7 +182,7 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="SotrudnikiUpdate" layoutX="11.0" layoutY="288.0" onMouseClicked="#UpdateAuto" prefHeight="19.0" prefWidth="134.0" text="Обновить">
+            <Label fx:id="SotrudnikiUpdate" layoutX="11.0" layoutY="288.0" onMouseClicked="#SotrudnikiUpdate" prefHeight="19.0" prefWidth="134.0" text="Обновить">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>

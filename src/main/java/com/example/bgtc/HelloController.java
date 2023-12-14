@@ -131,7 +131,7 @@ public class HelloController implements Initializable {
             ErrorLogin.setVisible(true);
             ErrorLogin.setText("Введите логин и пароль!");
         } else if (AuthLoginField.getText().equals(loginAuth) && AuthPassField.getText().equals(passAuth)) {
-            if (AuthLoginField.getText().equals("asd")|AuthLoginField.getText().equals("admin")){
+            if (AuthLoginField.getText().equals("asdasdas")|AuthLoginField.getText().equals("admin")){
                 AdministrirovanieLabel.setVisible(true);
             }else {
                 AdministrirovanieLabel.setVisible(false);
@@ -668,6 +668,22 @@ public class HelloController implements Initializable {
             }
         }
         SotrudnikiStatusDel = true;
+    }
+
+    @FXML
+    public void SotrudnikiUpdate(){
+        TableSotrudniki.getItems().clear();
+        mysqlConnect.dataSotrudniki();
+        try {
+            IdCol1.setCellValueFactory(new PropertyValueFactory<Sotrudniki, Integer>("id"));
+            FioSotrudniki.setCellValueFactory(new PropertyValueFactory<Sotrudniki, String>("fio"));
+            AutoCol1.setCellValueFactory(new PropertyValueFactory<Sotrudniki, String>("auto"));
+            GRZCol1.setCellValueFactory(new PropertyValueFactory<Sotrudniki, String>("grz"));
+            mysqlConnect.dataSotrudniki();
+            TableSotrudniki.setItems(listS);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //Добавление в ComboBox
