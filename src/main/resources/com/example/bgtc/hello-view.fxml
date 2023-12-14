@@ -34,37 +34,32 @@
                </image>
             </ImageView>         </children>
       </Pane>
-      <Pane fx:id="LeftPanel" prefHeight="505.0" prefWidth="178.0" style="-fx-background-color: #ffffff;">
+      <Pane fx:id="LeftPanel" prefHeight="505.0" prefWidth="167.0" style="-fx-background-color: #ffffff;">
          <children>
             <Label fx:id="Date" layoutX="14.0" layoutY="14.0">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="AdministrirovanieLabel" layoutX="13.0" layoutY="35.0" onMouseClicked="#AdministrirovanieLabel" prefHeight="33.0" prefWidth="152.0" text="Администрирование">
+            <Label fx:id="AdministrirovanieLabel" layoutX="13.0" layoutY="84.0" onMouseClicked="#AdministrirovanieLabel" prefHeight="33.0" prefWidth="152.0" text="Администрирование">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="AutoPark" layoutX="13.0" layoutY="68.0" onMouseClicked="#AutoParkPane" prefHeight="18.0" prefWidth="134.0" text="Автопарк">
+            <Label fx:id="AutoPark" layoutX="13.0" layoutY="39.0" onMouseClicked="#AutoParkPane" prefHeight="18.0" prefWidth="134.0" text="Автопарк">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="OrdersLabel" layoutX="13.0" layoutY="94.0" onMouseClicked="#Orders" prefHeight="18.0" prefWidth="134.0" text="Заказы">
+            <Label fx:id="OrdersLabel" layoutX="13.0" layoutY="65.0" onMouseClicked="#Orders" prefHeight="18.0" prefWidth="134.0" text="Заказы">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
          </children>
       </Pane>
-      <Pane fx:id="AutoParkPane" prefHeight="505.0" prefWidth="178.0" style="-fx-background-color: #ffffff;" visible="false">
+      <Pane fx:id="AutoParkPane" layoutX="178.0" layoutY="-2.0" prefHeight="505.0" prefWidth="178.0" style="-fx-background-color: #ffffff;" visible="false">
          <children>
-            <Label fx:id="ExitAutoPark" layoutX="7.0" layoutY="472.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Label>
             <TextField fx:id="AutoAdd" disable="true" layoutX="11.0" layoutY="94.0" promptText="Авто" />
             <TextField fx:id="GRZAdd" disable="true" layoutX="13.0" layoutY="140.0" promptText="ГРЗ" />
             <Label fx:id="AddAuto" layoutX="11.0" layoutY="202.0" onMouseClicked="#AddAutoA" prefHeight="19.0" prefWidth="134.0" text="Добавить траспорт">
@@ -72,20 +67,25 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <TableView fx:id="TableAutoPark" layoutX="178.0" prefHeight="505.0" prefWidth="933.0" visible="false">
+            <TableView fx:id="TableAutoPark" layoutX="178.0" prefHeight="505.0" prefWidth="746.0">
               <columns>
                 <TableColumn fx:id="IdCol" prefWidth="75.0" text="Id" />
                 <TableColumn fx:id="AutoCol" prefWidth="75.0" text="Авто" />
                   <TableColumn fx:id="GRZCol" prefWidth="75.0" text="ГРЗ" />
               </columns>
             </TableView>
-            <ComboBox fx:id="idCombo1" disable="true" layoutX="12.0" layoutY="39.0" onAction="#IdComboChangePark" prefWidth="150.0" promptText="id" />
+            <ComboBox fx:id="idCombo1" disable="true" layoutX="12.0" layoutY="14.0" onAction="#IdComboChangePark" prefWidth="150.0" promptText="id" />
             <Label fx:id="ChangeLabel1" layoutX="11.0" layoutY="234.0" onMouseClicked="#AutoChange" prefHeight="19.0" prefWidth="134.0" text="Изменить">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
             <Label fx:id="DelLabel" layoutX="11.0" layoutY="261.0" onMouseClicked="#DeleteAuto" prefHeight="19.0" prefWidth="134.0" text="Удалить">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="UpdateBut1" layoutX="11.0" layoutY="288.0" onMouseClicked="#UpdateAuto" prefHeight="19.0" prefWidth="134.0" text="Обновить">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
@@ -105,9 +105,9 @@
             </Label>
          </children>
       </Pane>
-      <Pane fx:id="OrdersPane" layoutX="-3.0" layoutY="-3.0" prefHeight="505.0" prefWidth="1110.0" style="-fx-background-color: #ffffff;" visible="false">
+      <Pane fx:id="OrdersPane" layoutX="178.0" layoutY="-5.0" prefHeight="511.0" prefWidth="933.0" style="-fx-background-color: #ffffff;" visible="false">
          <children>
-            <TableView fx:id="TableOrdrs" layoutX="162.0" prefHeight="505.0" prefWidth="950.0">
+            <TableView fx:id="TableOrdrs" layoutX="162.0" layoutY="14.0" prefHeight="497.0" prefWidth="770.0">
                <columns>
                   <TableColumn fx:id="idColZ" prefWidth="75.0" text="Id" />
                   <TableColumn fx:id="fioColZ" prefWidth="107.0" text="Фио" />
@@ -120,11 +120,6 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <Label fx:id="ExitAutoPark" layoutX="14.0" layoutY="367.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Label>
             <TextField fx:id="FioAdd" disable="true" layoutX="10.0" layoutY="47.0" promptText="Фио" />
             <TextField fx:id="AdressOtAdd" disable="true" layoutX="10.0" layoutY="81.0" promptText="Адрес начальный" />
             <Label fx:id="OrderAdd" layoutX="10.0" layoutY="234.0" onMouseClicked="#OrderAdd" prefHeight="19.0" prefWidth="134.0" text="Создать заказ">
@@ -134,18 +129,13 @@
             </Label>
             <TextField fx:id="AdressToAdd" disable="true" layoutX="10.0" layoutY="121.0" promptText="Адрес конечный" />
             <TextField fx:id="PhoneNumAdd" disable="true" layoutX="10.0" layoutY="159.0" promptText="Номер телефона" />
-            <Label fx:id="ExitAutoPark1" layoutX="12.0" layoutY="469.0" onMouseClicked="#Exit" prefHeight="19.0" prefWidth="48.0" text="Выход">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Label>
-            <ComboBox fx:id="idCombo" disable="true" layoutX="11.0" layoutY="14.0" onAction="#IdComboChange" prefWidth="150.0" promptText="id" />
+            <ComboBox fx:id="idCombo" disable="true" layoutX="11.0" layoutY="14.0" onAction="#IdComboChange" prefHeight="24.0" prefWidth="150.0" promptText="id" />
             <Label fx:id="ChangeLabel" layoutX="10.0" layoutY="263.0" onMouseClicked="#OrdersChange" prefHeight="19.0" prefWidth="134.0" text="Изменить">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <CheckBox fx:id="StatusCheck" alignment="CENTER" layoutX="12.0" layoutY="198.0" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="Выполнен">
+            <CheckBox fx:id="StatusCheck" alignment="CENTER" disable="true" layoutX="12.0" layoutY="198.0" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="Выполнен">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
@@ -155,13 +145,23 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="Print" layoutX="12.0" layoutY="441.0" onMouseClicked="#CreateExcel" prefHeight="19.0" prefWidth="48.0" text="Печать">
+            <Label fx:id="Print" layoutX="10.0" layoutY="441.0" onMouseClicked="#CreateExcel" prefHeight="19.0" prefWidth="48.0" text="Печать">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
             <TextField fx:id="PrintName" layoutX="14.0" layoutY="415.0" prefHeight="26.0" prefWidth="144.0" promptText="Имя файла" visible="false" />
+            <Label fx:id="UpdateBut" layoutX="10.0" layoutY="323.0" onMouseClicked="#UpdateOrders" prefHeight="19.0" prefWidth="134.0" text="Обновить">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
+      <ImageView fx:id="RockOnGolfCar" fitHeight="444.0" fitWidth="499.0" layoutX="597.0" layoutY="110.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@скала-скала-джонсон.gif" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
