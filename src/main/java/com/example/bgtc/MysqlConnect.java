@@ -8,7 +8,8 @@ import java.sql.*;
 public class MysqlConnect {
     public ObservableList<AutoPark> listA = FXCollections.observableArrayList();
     public ObservableList<Orders> listO = FXCollections.observableArrayList();
-    public ObservableList<Orders> listOC = FXCollections.observableArrayList();
+//    public ObservableList<Orders> listOC = FXCollections.observableArrayList();
+    public ObservableList<Sotrudniki> listS = FXCollections.observableArrayList();
     static Connection conn;
 
     public static Connection ConnectBd() {
@@ -24,7 +25,7 @@ public class MysqlConnect {
         }
         return null;
     }
-
+    //Выборка данных из БД
     public void dataAutoPark() {
         ConnectBd();
         String query = "SELECT * FROM AutoPark";
@@ -32,7 +33,8 @@ public class MysqlConnect {
             Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                listA.add(new AutoPark(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+                listA.add(new AutoPark(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getString(3)));
             }
         } catch (Exception ex) {
             System.out.println("Connection failed...");
@@ -60,5 +62,27 @@ public class MysqlConnect {
             System.out.println("Connection failed...");
             System.out.println(ex);
         }
+    }
+
+    public void dataSotrudniki(){
+        ConnectBd();
+        String query="SELECT * FROM Sotrudniki";
+        int id;
+        String fio;
+        String auto;
+        String grz;
+
+        try{
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while(resultSet.next()){
+                listS.add(new Sotrudniki(resultSet.getInt(1), resultSet.getString(2),resultSet.getString(3),
+                        resultSet.getString(4)));
+            }
+        }catch (Exception e){
+            System.out.println("Connection failed...");
+            System.out.println(e);
+        }
+
     }
 }

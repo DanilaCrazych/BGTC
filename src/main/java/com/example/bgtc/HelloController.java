@@ -17,6 +17,7 @@ import javafx.util.Duration;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import java.io.FileInputStream;
@@ -44,20 +45,20 @@ public class HelloController implements Initializable {
     @FXML
     private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark, AddAuto, UpdateTable, OrdersLabel, OrderAdd, ChangeLabel, ChangeLabel1, DelOrders, Print, UpdateBut, UpdateBut1;
     @FXML
-    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd, FioAdd, AdressOtAdd, AdressToAdd, PhoneNumAdd, PrintName;
+    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd, FioAdd, AdressOtAdd, AdressToAdd, PhoneNumAdd, PrintName,FioSotrudnikiAdd;
     @FXML
-    private Pane Auth, LeftPanel, AdminUserAdd, AutoParkPane, OrdersPane;
+    private Pane Auth, LeftPanel, AdminUserAdd, AutoParkPane,SotrudnikiPane, OrdersPane;
     @FXML
     private Button LoginButton, CreateUser;
     @FXML
-    private ComboBox idCombo, idCombo1;
+    private ComboBox idCombo, idCombo1,AutoCombo,GRZCombo,idCombo11;
     @FXML
     private CheckBox StatusCheck;
-    @FXML
-    private ImageView RockOnGolfCar;
+
 
     @FXML
     private TableView<AutoPark> TableAutoPark;
+
     @FXML
     private TableColumn<AutoPark, String> GRZCol;
     @FXML
@@ -80,8 +81,20 @@ public class HelloController implements Initializable {
     @FXML
     private TableColumn<Orders, String> statusColZ;
 
+    @FXML
+    private TableView<Sotrudniki> TableSotrudniki;
+    @FXML
+    private TableColumn<Sotrudniki, String> AutoCol1;
+    @FXML
+    private TableColumn<Sotrudniki, String> FioSotrudniki;
+    @FXML
+    private TableColumn<Sotrudniki, Integer> IdCol1;
+    @FXML
+    private TableColumn<Sotrudniki, String> GRZCol1;
+
     ObservableList<AutoPark> listA;
     ObservableList<Orders> listO;
+    ObservableList<Sotrudniki> listS;
     ArrayList<Integer> listDelPark;
 
     boolean statusAutoAdd = false;
@@ -91,8 +104,13 @@ public class HelloController implements Initializable {
     boolean StatusAutoDel = false;
     boolean StatusOrderDel = false;
     boolean StatusPrint = false;
+    boolean SotrudnikiStatusAdd = false;
+    boolean SotrudnikiStatusChange = false;
+    boolean SotrudnikiStatusDel = false;
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
+
+    //Логин
     @FXML
     protected void Login() throws InterruptedException {
         String query = "SELECT login, password FROM users WHERE login LIKE '" + AuthLoginField.getText() + "'";
@@ -120,15 +138,11 @@ public class HelloController implements Initializable {
             }
             FadeTransition auth = new FadeTransition(Duration.seconds(1), Auth);
             FadeTransition leftpaneFade = new FadeTransition(Duration.seconds(1), LeftPanel);
-            FadeTransition RockGolf = new FadeTransition(Duration.seconds(1), RockOnGolfCar);
             auth.setByValue(1.0);
             auth.setToValue(0);
             auth.play();
 
-            RockGolf.setByValue(0);
-            RockGolf.setToValue(1.0);
-            RockGolf.play();
-            RockOnGolfCar.setDisable(true);
+
 
             leftpaneFade.setByValue(0);
             leftpaneFade.setToValue(1.0);
@@ -140,14 +154,16 @@ public class HelloController implements Initializable {
         }
     }
 
+    //Кнопка "Администрирование"
     @FXML
     protected void AdministrirovanieLabel() {
         AutoParkPane.setVisible(false);
         OrdersPane.setVisible(false);
         AdminUserAdd.setVisible(true);
-        RockOnGolfCar.setDisable(false);
+
     }
 
+    //Создание нового пользователя
     @FXML
     protected void CreateUser() {
         String LoginCreate = CreateUserLogin.getText();
@@ -166,6 +182,7 @@ public class HelloController implements Initializable {
         }
     }
 
+    //Выход
     @FXML
     protected void Exit() {
         LeftPanel.setVisible(true);
@@ -188,6 +205,7 @@ public class HelloController implements Initializable {
 
     }
 
+    //Форма заказов
     @FXML
     protected void Orders() {
         HelloApplication ha = new HelloApplication();
@@ -212,8 +230,7 @@ public class HelloController implements Initializable {
         OrdersPane.setVisible(true);
         AdminUserAdd.setVisible(false);
         AutoParkPane.setVisible(false);
-        RockOnGolfCar.setDisable(false);
-        RockOnGolfCar.setVisible(false);
+        SotrudnikiPane.setVisible(false);
         mysqlConnect.dataOrders();
 
 
@@ -237,7 +254,7 @@ public class HelloController implements Initializable {
         idCombo.setPromptText("id");
 
     }
-
+    //Создание заказа
     @FXML
     protected void OrderAdd() {
         if (statusOrderAdd == false) {
@@ -272,7 +289,7 @@ public class HelloController implements Initializable {
             }
         }
     }
-
+    //Изменение заказа
     @FXML
     public void OrdersChange() {
         FioAdd.setDisable(false);
@@ -308,7 +325,7 @@ public class HelloController implements Initializable {
         }
         StatusOrderChange = true;
     }
-
+    //Удаление заказа
     @FXML
     public void DelOrder(){
         idCombo.setDisable(false);
@@ -345,6 +362,7 @@ public class HelloController implements Initializable {
         alert.setContentText("Данные удалены");
         alert.showAndWait();
     }
+    //Обновить таблицу
     @FXML
     public void UpdateOrders(){
         TableOrdrs.getItems().clear();
@@ -364,7 +382,7 @@ public class HelloController implements Initializable {
         }
 
     }
-
+    //Вывод Таблицы автопарка
     @FXML
     protected void AutoParkPane() {
         statusAutoAdd = false;
@@ -375,8 +393,7 @@ public class HelloController implements Initializable {
         AdminUserAdd.setVisible(false);
         OrdersPane.setVisible(false);
         AutoParkPane.setVisible(true);
-        RockOnGolfCar.setDisable(false);
-        RockOnGolfCar.setVisible(false);
+        SotrudnikiPane.setVisible(false);
         TableAutoPark.getItems().clear();
         mysqlConnect.dataAutoPark();
 
@@ -398,7 +415,7 @@ public class HelloController implements Initializable {
         idCombo1.setPromptText("id");
 
     }
-
+    //Добавление Авто
     @FXML
     protected void AddAutoA() {
 
@@ -432,7 +449,7 @@ public class HelloController implements Initializable {
             }
         }
     }
-
+    //Изменение авто
     @FXML
     public void AutoChange() {
         AutoAdd.setDisable(false);
@@ -459,6 +476,7 @@ public class HelloController implements Initializable {
         }
         StatusOrderChange = true;
     }
+    //Удалить авто
     @FXML
     public void DeleteAuto() {
         idCombo1.setDisable(false);
@@ -467,24 +485,6 @@ public class HelloController implements Initializable {
             List<Object> IdComboInt = new ArrayList<Object>();
             IdComboInt.add(idCombo1.getValue());
             int idComboBox = Integer.parseInt(IdComboInt.get(0).toString());
-//            try {
-//                for (int i = 0; i < listA.size(); i++) {
-//                    if (i >= idComboBox) {
-//                        try {
-//                            listDelPark.add(listA.get(i).id);
-//                            int j = i+1;
-//                            Statement statement = connection.createStatement();
-//                            statement.executeUpdate("UPDATE `BGTC`.`AutoPark` SET `id` = '" + j + "' WHERE (`id` = '" + listDelPark.get(i) + "');");
-//                        } catch (Exception ex) {
-//                            System.out.println("Connection failed...");
-//                            System.out.println(ex);
-//                        }
-//                    }
-//                }
-//            } catch (Exception ex) {
-//                System.out.println("Connection failed...");
-//                System.out.println(ex);
-//            }
             try {
                 try {
                     Statement statement = connection.createStatement();
@@ -513,6 +513,7 @@ public class HelloController implements Initializable {
         }
         StatusAutoDel = true;
     }
+    //Обновить авто
     @FXML
     public void UpdateAuto(){
         TableAutoPark.getItems().clear();
@@ -529,6 +530,138 @@ public class HelloController implements Initializable {
             throw new RuntimeException(e);
         }
     }
+
+    @FXML
+    public void SotrudnikiPane(){
+        AdminUserAdd.setVisible(false);
+        OrdersPane.setVisible(false);
+        AutoParkPane.setVisible(false);
+        SotrudnikiPane.setVisible(true);
+
+        idCombo11.setDisable(true);
+        FioSotrudnikiAdd.setDisable(true);
+        AutoCombo.setDisable(true);
+        GRZCombo.setDisable(true);
+        idCombo11.getItems().clear();
+        FioSotrudnikiAdd.clear();
+        AutoCombo.getItems().clear();
+        GRZCombo.getItems().clear();
+
+        TableSotrudniki.getItems().clear();
+        mysqlConnect.dataSotrudniki();
+
+        try {
+            IdCol1.setCellValueFactory(new PropertyValueFactory<Sotrudniki, Integer>("id"));
+            FioSotrudniki.setCellValueFactory(new PropertyValueFactory<Sotrudniki, String>("fio"));
+            AutoCol1.setCellValueFactory(new PropertyValueFactory<Sotrudniki, String>("auto"));
+            GRZCol1.setCellValueFactory(new PropertyValueFactory<Sotrudniki, String>("grz"));
+            listS = mysqlConnect.listS;
+            TableSotrudniki.setItems(listS);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        idCombo11.getItems().clear();
+        for (int i = 0; i < listS.size(); i++) {
+            idCombo11.getItems().addAll(listS.get(i).id);
+        }
+    }
+    @FXML
+    public void SotrudnikiAdd(){
+        SotrudnikiCombo();
+        if (SotrudnikiStatusAdd==false){
+            FioSotrudnikiAdd.setDisable(false);
+            AutoCombo.setDisable(false);
+            GRZCombo.setDisable(false);
+            SotrudnikiStatusAdd=true;
+        } else if (FioSotrudnikiAdd.getText().equals("")) {
+            alert.setTitle("Ошибка");
+            alert.setHeaderText(null);
+            alert.setContentText("Заполните пустые поля!");
+            alert.showAndWait();
+        } else {
+            String FioAdd = FioSotrudnikiAdd.getText();
+            String autoAdd = AutoCombo.getValue().toString();
+            String grzAdd = GRZCombo.getValue().toString();
+            String query = "INSERT INTO `BGTC`.`Sotrudniki` (`fio`, `auto`, `grz`) VALUES ('"+FioAdd+"', '"+autoAdd+"', '"+grzAdd+"');\n";
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(query);
+                alert.setTitle("Информация");
+                alert.setHeaderText(null);
+                alert.setContentText("Сотрудник добавлен!");
+                alert.showAndWait();
+            } catch (Exception ex) {
+                System.out.println("Connection failed...");
+                System.out.println(ex);
+                StatusCreate.setText("Ошибка!");
+            }
+        }
+    }
+
+    @FXML
+    public void SotrudnikiChange(){
+        idCombo11.setDisable(false);
+        FioSotrudnikiAdd.setDisable(false);
+        AutoCombo.setDisable(false);
+        GRZCombo.setDisable(false);
+        if (StatusOrderChange == true) {
+            String FioChange = FioSotrudnikiAdd.getText();
+            String AutoChange = AutoCombo.getValue().toString();
+            String GrzChange = GRZCombo.getValue().toString();
+            String query = "UPDATE `BGTC`.`Sotrudniki` SET `fio` = '"+FioChange+"', `auto` = '"+AutoChange+"', `grz` = '"+GrzChange+"' WHERE (`id` = '"+ idCombo11.getValue()+"');\n";
+            try {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(query);
+                alert.setTitle("Информация");
+                alert.setHeaderText(null);
+                alert.setContentText("Данные обновлены");
+                alert.showAndWait();
+            } catch (Exception ex) {
+                System.out.println("Connection failed...");
+                System.out.println(ex);
+            }
+        }
+        StatusOrderChange=true;
+    }
+
+    @FXML
+    public void SotrudnikiDel(){
+        idCombo11.setDisable(false);
+        if (SotrudnikiStatusDel == true) {
+            String query = "DELETE FROM `BGTC`.`Sotrudniki` WHERE (`id` = '" + idCombo11.getValue() + "');";
+            List<Object> IdComboInt = new ArrayList<Object>();
+            IdComboInt.add(idCombo11.getValue());
+            int idComboBox = Integer.parseInt(IdComboInt.get(0).toString());
+            try {
+                try {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate(query);
+                    alert.setTitle("Информация");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Данные удалены");
+                    alert.showAndWait();
+                } catch (Exception ex) {
+                    System.out.println("Connection failed...");
+                    System.out.println(ex);
+                }
+
+                try {
+                    int Increment = listS.size();
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate("ALTER TABLE AutoPark AUTO_INCREMENT = " + Increment + "");
+                } catch (Exception ex) {
+                    System.out.println("Connection failed...");
+                    System.out.println(ex);
+                }
+            } catch (Exception exception) {
+                System.out.println("Connection failed...");
+                System.out.println(exception);
+            }
+        }
+        SotrudnikiStatusDel = true;
+    }
+
+    //Добавление в ComboBox
     @FXML
     public void IdComboChange() {
         for (int i = 0; i < listO.size(); i++) {
@@ -550,6 +683,43 @@ public class HelloController implements Initializable {
         }
     }
 
+    @FXML
+    public void IdCombiChangeSotr(){
+        for (int i = 0; i < listS.size(); i++) {
+            if (idCombo11.getValue().equals(listS.get(i).id)) {
+                FioSotrudnikiAdd.setText(listS.get(i).fio);
+            }
+            AutoGrzSet();
+        }
+    }
+
+    public void AutoGrzSet(){
+        mysqlConnect.dataAutoPark();
+        listA = mysqlConnect.listA;
+        for (int i = 0; i < listA.size(); i++) {
+            AutoCombo.getItems().addAll(listA.get(i).auto);
+            GRZCombo.getItems().addAll(listA.get(i).grz);
+        }
+    }
+    @FXML
+    public void SotrudnikiCombo(){
+        mysqlConnect.dataAutoPark();
+        listA = mysqlConnect.listA;
+        for (int i = 0; i < listS.size(); i++) {
+            idCombo11.getItems().addAll(listS.get(i).id);
+            AutoCombo.getItems().addAll(listA.get(i).auto);
+            GRZCombo.getItems().addAll(listA.get(i).grz);
+        }
+        for (int i = 0; i < listA.size(); i++) {
+            AutoCombo.getItems().addAll(listA.get(i).auto);
+            GRZCombo.getItems().addAll(listA.get(i).grz);
+        }
+        for (int i = 0; i < listS.size(); i++) {
+            idCombo11.getItems().addAll(listS.get(i).id);
+        }
+
+    }
+    //Вывод на печать
     @FXML
     public void CreateExcel() {
             if (StatusPrint == true) {
@@ -606,15 +776,10 @@ public class HelloController implements Initializable {
         leftpaneFade.setToValue(0);
         leftpaneFade.play();
 
-        FadeTransition RockGolf = new FadeTransition(Duration.seconds(0.001), RockOnGolfCar);
-        RockOnGolfCar.setDisable(true);
-        RockGolf.setByValue(1.0);
-        RockGolf.setToValue(0);
-        RockGolf.play();
         Date.setText("Дата: " + formatter.format(date));
 
     }
-
+    //Подключение к БД
     public void ConnectBd() {
         try {
             connection = DriverManager.getConnection(url, user, password);
