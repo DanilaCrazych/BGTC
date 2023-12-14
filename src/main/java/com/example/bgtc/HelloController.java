@@ -45,13 +45,13 @@ public class HelloController implements Initializable {
     @FXML
     private Label ErrorLogin, Date, AdministrirovanieLabel, AutoPark, StatusCreate, ExitAutoPark, AddAuto, UpdateTable, OrdersLabel, OrderAdd, ChangeLabel, ChangeLabel1, DelOrders, Print, UpdateBut, UpdateBut1;
     @FXML
-    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd, FioAdd, AdressOtAdd, AdressToAdd, PhoneNumAdd, PrintName,FioSotrudnikiAdd;
+    private TextField AuthLoginField, AuthPassField, CreateUserLogin, CreateUserMail, CreateUserPass, AutoAdd, GRZAdd, FioAdd, AdressOtAdd, PhoneNumAdd, PrintName,FioSotrudnikiAdd;
     @FXML
     private Pane Auth, LeftPanel, AdminUserAdd, AutoParkPane,SotrudnikiPane, OrdersPane;
     @FXML
     private Button LoginButton, CreateUser;
     @FXML
-    private ComboBox idCombo, idCombo1,AutoCombo,GRZCombo,idCombo11;
+    private ComboBox idCombo, idCombo1,AutoCombo,GRZCombo,idCombo11, Driver;
     @FXML
     private CheckBox StatusCheck;
 
@@ -157,6 +157,7 @@ public class HelloController implements Initializable {
     //Кнопка "Администрирование"
     @FXML
     protected void AdministrirovanieLabel() {
+        SotrudnikiPane.setVisible(false);
         AutoParkPane.setVisible(false);
         OrdersPane.setVisible(false);
         AdminUserAdd.setVisible(true);
@@ -210,15 +211,17 @@ public class HelloController implements Initializable {
     protected void Orders() {
         HelloApplication ha = new HelloApplication();
         TableOrdrs.getItems().clear();
+        mysqlConnect.dataSotrudniki();
+//        listS= mysqlConnect.listS;
 
         FioAdd.setDisable(true);
         AdressOtAdd.setDisable(true);
-        AdressToAdd.setDisable(true);
+        Driver.setDisable(true);
         PhoneNumAdd.setDisable(true);
         idCombo.setDisable(true);
         FioAdd.clear();
         AdressOtAdd.clear();
-        AdressToAdd.clear();
+
         PhoneNumAdd.clear();
         StatusCheck.setSelected(false);
         StatusPrint = false;
@@ -242,7 +245,7 @@ public class HelloController implements Initializable {
             numPhoneColZ.setCellValueFactory(new PropertyValueFactory<Orders, String>("phonenum"));
             statusColZ.setCellValueFactory(new PropertyValueFactory<Orders, String>("status"));
 
-            listO = mysqlConnect.listO;
+//            listO = mysqlConnect.listO;
             TableOrdrs.setItems(listO);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -252,6 +255,10 @@ public class HelloController implements Initializable {
             idCombo.getItems().addAll(listO.get(i).id);
         }
         idCombo.setPromptText("id");
+        Driver.getItems().clear();
+        for (int i = 0; i < listS.size(); i++) {
+            Driver.getItems().addAll(listS.get(i).fio);
+        }
 
     }
     //Создание заказа
@@ -259,11 +266,13 @@ public class HelloController implements Initializable {
     protected void OrderAdd() {
         if (statusOrderAdd == false) {
             FioAdd.setDisable(false);
+            Driver.setDisable(false);
             AdressOtAdd.setDisable(false);
-            AdressToAdd.setDisable(false);
             PhoneNumAdd.setDisable(false);
+            mysqlConnect.dataSotrudniki();
+//            listS= mysqlConnect.listS;
             statusOrderAdd = true;
-        } else if (FioAdd.equals("") | AdressOtAdd.equals("") | AdressToAdd.equals("") | PhoneNumAdd.equals("")) {
+        } else if (FioAdd.equals("") | AdressOtAdd.equals("") | Driver.getValue().toString().equals("") | PhoneNumAdd.equals("")) {
             alert.setTitle("Ошибка");
             alert.setHeaderText(null);
             alert.setContentText("Заполните пустые поля!");
@@ -271,10 +280,9 @@ public class HelloController implements Initializable {
         } else {
             String FioAddOrder = FioAdd.getText();
             String Adressot = AdressOtAdd.getText();
-            String Adressto = AdressToAdd.getText();
             String Phonenum = PhoneNumAdd.getText();
             String query = "INSERT INTO `BGTC`.`Orders` (`fio`, `adressot`,`adressto`, `phonenum`, `status` ) VALUES ('" + FioAddOrder + "', '" + Adressot + "', '"
-                    + Adressto + "', '" + Phonenum + "', 'Выполняется');";
+                    + Driver.getValue().toString() + "', '" + Phonenum + "', 'Выполняется');";
             try {
                 Statement statement = connection.createStatement();
                 statement.executeUpdate(query);
@@ -292,15 +300,20 @@ public class HelloController implements Initializable {
     //Изменение заказа
     @FXML
     public void OrdersChange() {
+
         FioAdd.setDisable(false);
+        Driver.setDisable(false);
         AdressOtAdd.setDisable(false);
-        AdressToAdd.setDisable(false);
         PhoneNumAdd.setDisable(false);
         idCombo.setDisable(false);
+//        Driver.getItems().clear();
+//        for (int i = 0; i < listS.size(); i++) {
+//            Driver.getItems().addAll(listS.get(i).fio);
+//        }
+
         StatusCheck.setDisable(false);
         String FioA = FioAdd.getText();
         String AdressOtA = AdressOtAdd.getText();
-        String AdressToA = AdressToAdd.getText();
         String PhoneNumA = PhoneNumAdd.getText();
         String StatusA = "";
         if (StatusCheck.isSelected()) {
@@ -309,8 +322,7 @@ public class HelloController implements Initializable {
             StatusA = "Выполняется";
         }
         if (StatusOrderChange == true) {
-            String query = "UPDATE `BGTC`.`Orders` SET `fio` = '" + FioA + "', `adressot` = '" + AdressOtA + "', `adressto` = '" + AdressToA + "', `phonenum` = '" + PhoneNumA + "', `status` = '" + StatusA + "' WHERE (`id` = '" + idCombo.getValue() + "')";
-
+            String query = "UPDATE `BGTC`.`Orders` SET `fio` = '" + FioA + "', `adressot` = '" + AdressOtA + "', `adressto` = '" + Driver.getValue().toString() + "', `phonenum` = '" + PhoneNumA + "', `status` = '" + StatusA + "' WHERE (`id` = '" + idCombo.getValue() + "')";
             try {
                 Statement statement = connection.createStatement();
                 statement.executeUpdate(query);
@@ -375,7 +387,7 @@ public class HelloController implements Initializable {
             numPhoneColZ.setCellValueFactory(new PropertyValueFactory<Orders, String>("phonenum"));
             statusColZ.setCellValueFactory(new PropertyValueFactory<Orders, String>("status"));
 
-            listO = mysqlConnect.listO;
+//            listO = mysqlConnect.listO;
             TableOrdrs.setItems(listO);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -402,7 +414,7 @@ public class HelloController implements Initializable {
             AutoCol.setCellValueFactory(new PropertyValueFactory<AutoPark, String>("auto"));
             GRZCol.setCellValueFactory(new PropertyValueFactory<AutoPark, String>("grz"));
 
-            listA = mysqlConnect.listA;
+//            listA = mysqlConnect.listA;
             TableAutoPark.setItems(listA);
 
         } catch (Exception e) {
@@ -523,7 +535,7 @@ public class HelloController implements Initializable {
             AutoCol.setCellValueFactory(new PropertyValueFactory<AutoPark, String>("auto"));
             GRZCol.setCellValueFactory(new PropertyValueFactory<AutoPark, String>("grz"));
 
-            listA = mysqlConnect.listA;
+//            listA = mysqlConnect.listA;
             TableAutoPark.setItems(listA);
 
         } catch (Exception e) {
@@ -533,6 +545,7 @@ public class HelloController implements Initializable {
 
     @FXML
     public void SotrudnikiPane(){
+
         AdminUserAdd.setVisible(false);
         OrdersPane.setVisible(false);
         AutoParkPane.setVisible(false);
@@ -546,28 +559,24 @@ public class HelloController implements Initializable {
         FioSotrudnikiAdd.clear();
         AutoCombo.getItems().clear();
         GRZCombo.getItems().clear();
-
-        TableSotrudniki.getItems().clear();
-        mysqlConnect.dataSotrudniki();
+        SotrudnikiCombo();
 
         try {
+            TableSotrudniki.getItems().clear();
             IdCol1.setCellValueFactory(new PropertyValueFactory<Sotrudniki, Integer>("id"));
             FioSotrudniki.setCellValueFactory(new PropertyValueFactory<Sotrudniki, String>("fio"));
             AutoCol1.setCellValueFactory(new PropertyValueFactory<Sotrudniki, String>("auto"));
             GRZCol1.setCellValueFactory(new PropertyValueFactory<Sotrudniki, String>("grz"));
-            listS = mysqlConnect.listS;
+            mysqlConnect.dataSotrudniki();
             TableSotrudniki.setItems(listS);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        idCombo11.getItems().clear();
-        for (int i = 0; i < listS.size(); i++) {
-            idCombo11.getItems().addAll(listS.get(i).id);
-        }
+
     }
     @FXML
     public void SotrudnikiAdd(){
-        SotrudnikiCombo();
+
         if (SotrudnikiStatusAdd==false){
             FioSotrudnikiAdd.setDisable(false);
             AutoCombo.setDisable(false);
@@ -664,13 +673,17 @@ public class HelloController implements Initializable {
     //Добавление в ComboBox
     @FXML
     public void IdComboChange() {
-        for (int i = 0; i < listO.size(); i++) {
-            if (idCombo.getValue().equals(listO.get(i).id)) {
-                FioAdd.setText(listO.get(i).fio);
-                AdressOtAdd.setText(listO.get(i).adressot);
-                AdressToAdd.setText(listO.get(i).adressto);
-                PhoneNumAdd.setText(listO.get(i).phonenum);
+        try {
+            for (int i = 0; i < listO.size(); i++) {
+                if (idCombo.getValue().equals(listO.get(i).id)) {
+                    FioAdd.setText(listO.get(i).fio);
+                    AdressOtAdd.setText(listO.get(i).adressot);
+                    PhoneNumAdd.setText(listO.get(i).phonenum);
+                }
             }
+        } catch (Exception e) {
+            System.out.println("Ненужная надпись :)");
+            throw new RuntimeException(e);
         }
     }
     @FXML
@@ -695,7 +708,7 @@ public class HelloController implements Initializable {
 
     public void AutoGrzSet(){
         mysqlConnect.dataAutoPark();
-        listA = mysqlConnect.listA;
+//        listA = mysqlConnect.listA;
         for (int i = 0; i < listA.size(); i++) {
             AutoCombo.getItems().addAll(listA.get(i).auto);
             GRZCombo.getItems().addAll(listA.get(i).grz);
@@ -704,19 +717,15 @@ public class HelloController implements Initializable {
     @FXML
     public void SotrudnikiCombo(){
         mysqlConnect.dataAutoPark();
-        listA = mysqlConnect.listA;
+//        listA = mysqlConnect.listA;
+        mysqlConnect.dataSotrudniki();
+//        listS= mysqlConnect.listS;
         for (int i = 0; i < listS.size(); i++) {
             idCombo11.getItems().addAll(listS.get(i).id);
             AutoCombo.getItems().addAll(listA.get(i).auto);
             GRZCombo.getItems().addAll(listA.get(i).grz);
         }
-        for (int i = 0; i < listA.size(); i++) {
-            AutoCombo.getItems().addAll(listA.get(i).auto);
-            GRZCombo.getItems().addAll(listA.get(i).grz);
-        }
-        for (int i = 0; i < listS.size(); i++) {
-            idCombo11.getItems().addAll(listS.get(i).id);
-        }
+
 
     }
     //Вывод на печать
@@ -725,7 +734,7 @@ public class HelloController implements Initializable {
             if (StatusPrint == true) {
                 String printName = PrintName.getText();
                 try {
-                    listO = mysqlConnect.listO;
+//                    listO = mysqlConnect.listO;
                     TableOrdrs.setItems(listO);
                     DirectoryChooser directoryChooser = new DirectoryChooser();
                     directoryChooser.setTitle("Создание Excel");
@@ -771,6 +780,9 @@ public class HelloController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ConnectBd();
+        listS = mysqlConnect.listS;
+        listO = mysqlConnect.listO;
+        listA = mysqlConnect.listA;
         FadeTransition leftpaneFade = new FadeTransition(Duration.seconds(0.001), LeftPanel);
         leftpaneFade.setByValue(1.0);
         leftpaneFade.setToValue(0);

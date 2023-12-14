@@ -110,15 +110,15 @@
             </Label>
          </children>
       </Pane>
-      <Pane fx:id="OrdersPane" layoutX="178.0" layoutY="-5.0" prefHeight="511.0" prefWidth="933.0" style="-fx-background-color: #ffffff;">
+      <Pane fx:id="OrdersPane" layoutX="178.0" layoutY="-5.0" prefHeight="511.0" prefWidth="933.0" style="-fx-background-color: #ffffff;" visible="false">
          <children>
             <TableView fx:id="TableOrdrs" layoutX="162.0" layoutY="14.0" prefHeight="497.0" prefWidth="770.0">
                <columns>
                   <TableColumn fx:id="idColZ" prefWidth="36.0" text="Id" />
-                  <TableColumn fx:id="fioColZ" prefWidth="154.0" text="Фио" />
-                  <TableColumn fx:id="adresStartColZ" minWidth="0.0" prefWidth="112.0" text="Адрес начальный" />
-                  <TableColumn fx:id="adresFinishColZ" prefWidth="140.0" text="Адрес конечный" />
-                  <TableColumn fx:id="numPhoneColZ" prefWidth="122.0" text="Номер телефона" />
+                  <TableColumn fx:id="fioColZ" prefWidth="178.0" text="Фио" />
+                  <TableColumn fx:id="adresStartColZ" minWidth="0.0" prefWidth="114.0" text="Адрес " />
+                  <TableColumn fx:id="numPhoneColZ" prefWidth="101.0" text="Номер телефона" />
+                  <TableColumn fx:id="adresFinishColZ" prefWidth="176.0" text="Водитель" />
                   <TableColumn fx:id="statusColZ" prefWidth="136.0" text="Status" />
                </columns>
                <columnResizePolicy>
@@ -132,8 +132,7 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <TextField fx:id="AdressToAdd" disable="true" layoutX="10.0" layoutY="121.0" promptText="Адрес конечный" />
-            <TextField fx:id="PhoneNumAdd" disable="true" layoutX="10.0" layoutY="159.0" promptText="Номер телефона" />
+            <TextField fx:id="PhoneNumAdd" disable="true" layoutX="10.0" layoutY="118.0" promptText="Номер телефона" />
             <ComboBox fx:id="idCombo" disable="true" layoutX="11.0" layoutY="14.0" onAction="#IdComboChange" prefHeight="24.0" prefWidth="150.0" promptText="id" />
             <Label fx:id="ChangeLabel" layoutX="10.0" layoutY="263.0" onMouseClicked="#OrdersChange" prefHeight="19.0" prefWidth="134.0" text="Изменить">
                <font>
@@ -155,12 +154,13 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <TextField fx:id="PrintName" layoutX="14.0" layoutY="415.0" prefHeight="26.0" prefWidth="144.0" promptText="Имя файла" visible="false" />
+            <TextField fx:id="PrintName" layoutX="8.0" layoutY="415.0" prefHeight="26.0" prefWidth="150.0" promptText="Имя файла" visible="false" />
             <Label fx:id="UpdateBut" layoutX="10.0" layoutY="323.0" onMouseClicked="#UpdateOrders" prefHeight="19.0" prefWidth="134.0" text="Обновить">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
+            <ComboBox fx:id="Driver" disable="true" layoutX="11.0" layoutY="157.0" prefHeight="24.0" prefWidth="150.0" promptText="Водитель" />
          </children>
       </Pane>
       <Pane fx:id="SotrudnikiPane" layoutX="178.0" prefHeight="505.0" prefWidth="188.0" style="-fx-background-color: #ffffff;" visible="false">
